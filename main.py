@@ -9,6 +9,7 @@ import datetime
 from werkzeug import secure_filename
 import os
 import datetime
+from math import ceil
 
 #Initialize the app from Flask
 app = Flask(__name__)
@@ -36,15 +37,22 @@ def landing():
 @app.route('/home<int:page>', methods=['GET', 'POST'])
 def home(page):
 	print 'hello!!!!'
-#	perpage=10
-#	startat=page*perpage
-#	db = mysql.connect('localhost', 'root', 'password', 'img')
-#	cursor = db.cursor()
-#	cursor.execute('SELECT Id,Title,Img FROM image limit %s, %s;', (startat,perpage))
-#	data = list(cursor.fetchall())
+	perpage = 10
+	startat = ((page - 1) * perpage)
+	cursor = conn.cursor()
+	query = 'SELECT COUNT(*) as ct FROM pictures'
+	cursor.execute(query)
+	data = cursor.fetchone()
+	totalpages = int(ceil( data['ct'] / 10.0 ))
+	if totalpages == 0:
+		totalpages = 1
+	query = 'SELECT * FROM `pictures` ORDER BY `pictures`.`time` ASC limit %s, %s'
+	cursor.execute(query, (startat, perpage))
+	data = cursor.fetchall()
+	print data
 	if session.get('logged_in') is True:
-		return render_template('home.html', logged_in = True, username = session['username'], page = page)
-	return render_template('home.html', page = page)
+		return render_template('home.html', logged_in = True, username = session['username'], page = page, lastpage = totalpages, pictures = data)
+	return render_template('home.html', page = page, lastpage = totalpages, pictures = data)
 
 #def home():
 	#SELECT * FROM `pictures` ORDER BY `pictures`.`time` ASC
@@ -67,7 +75,7 @@ def register():
 #Define route for upload
 @app.route('/upload')
 def upload():
-	return render_template('upload.html')
+	return render_template('upload.html', logged_in = True)
 
 #Authenticates the login
 @app.route('/loginAuth', methods=['GET', 'POST'])
