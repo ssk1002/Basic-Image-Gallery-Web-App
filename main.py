@@ -32,14 +32,27 @@ def landing():
 	return redirect(url_for('home'))
 	
 #Define route for landing at home
-@app.route('/home')
-def home():
+@app.route('/home', defaults={'page':1}, methods=['GET', 'POST'])
+@app.route('/home<int:page>', methods=['GET', 'POST'])
+def home(page):
+	print 'hello!!!!'
+#	perpage=10
+#	startat=page*perpage
+#	db = mysql.connect('localhost', 'root', 'password', 'img')
+#	cursor = db.cursor()
+#	cursor.execute('SELECT Id,Title,Img FROM image limit %s, %s;', (startat,perpage))
+#	data = list(cursor.fetchall())
+	if session.get('logged_in') is True:
+		return render_template('home.html', logged_in = True, username = session['username'], page = page)
+	return render_template('home.html', page = page)
+
+#def home():
 	#SELECT * FROM `pictures` ORDER BY `pictures`.`time` ASC
 #	cursor.execute(query)
 #	data = cursor.fetchall()
-	if session.get('logged_in') is True:
-		return render_template('home.html', logged_in = True, username = session['username'])
-	return render_template('home.html')
+#	if session.get('logged_in') is True:
+#		return render_template('home.html', logged_in = True, username = session['username'])
+#	return render_template('home.html')
 
 #Define route for login
 @app.route('/login')

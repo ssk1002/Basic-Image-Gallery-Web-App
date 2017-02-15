@@ -55,6 +55,18 @@
                     {% endfor %}
                     </table>
                     
+                    {% if page != 1 %}
+                    <a href="{{ url_for('home', page = page-1) }}">
+                        <span class="label label-default">Prev</span>
+                    </a>
+                    {% endif %}
+                    
+                    {% if page != lastpage %}
+                    <a href="{{ url_for('home', page = page+1) }}">
+                        <span class="label label-default">Next</span>
+                    </a>
+                    {% endif %}
+                    
                     {% if error %}
                         <p class="error"><strong>Error:</strong> {{ error }}</p>
                     {% endif %}
