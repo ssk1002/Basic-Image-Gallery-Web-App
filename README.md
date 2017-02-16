@@ -13,8 +13,11 @@ You need to be running python 2.7 with the proper libraries for flask, hashlib, 
 5. Use and appreciate the database!
 
 Below are the preregisted usernames and passwords.
-username // password
-user1 // 123
-user2 // 234
-user3 // 345
 
+username // password
+
+user1 // 123
+
+user2 // 234
+
+user3 // 345
