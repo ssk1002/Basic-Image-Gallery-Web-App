@@ -1,7 +1,7 @@
 #Some code used from http://code.runnable.com/UiPcaBXaxGNYAAAL/how-to-upload-a-file-to-the-server-in-flask-for-python
 
 
-#Import Flask Library
+#Import libaraies below
 from flask import Flask, render_template, request, session, url_for, redirect
 import hashlib
 import pymysql.cursors
@@ -129,7 +129,8 @@ def registerAuth():
 		cursor.close()
 		success = "Registration Sucessful! Log in below to get started!"
 		return render_template('login.html', success = success)
-		
+
+#Define route for logout		
 @app.route('/logout')
 def logout():
 	session.pop('username')
@@ -140,7 +141,8 @@ def logout():
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
-	
+
+#Path for uploading	
 @app.route('/uploading', methods=['POST'])
 def uploading():
 	username = session['username']
@@ -167,7 +169,8 @@ def uploading():
 		# Redirect the user to the uploaded_file route, which
 		# will basicaly show on the browser the uploaded file
 		return render_template('upload.html', logged_in = True, success = True, filepath = fullpath)
-		
+
+#Define route for delete		
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
 	username = session['username']
@@ -187,7 +190,7 @@ def delete():
 		return render_template('delete.html', logged_in = True, pictures = data, success = True)
 	return render_template('delete.html', logged_in = True, pictures = data)
 
-
+#Define route for edit
 @app.route('/edit', methods=['GET', 'POST'])
 def edit():
 	username = session['username']
