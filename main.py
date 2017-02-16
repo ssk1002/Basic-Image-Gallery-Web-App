@@ -36,7 +36,6 @@ def landing():
 @app.route('/home', defaults={'page':1}, methods=['GET', 'POST'])
 @app.route('/home<int:page>', methods=['GET', 'POST'])
 def home(page):
-	print 'hello!!!!'
 	perpage = 10
 	startat = ((page - 1) * perpage)
 	cursor = conn.cursor()
@@ -49,7 +48,6 @@ def home(page):
 	query = 'SELECT * FROM `pictures` ORDER BY `pictures`.`time` ASC limit %s, %s'
 	cursor.execute(query, (startat, perpage))
 	data = cursor.fetchall()
-	print data
 	if session.get('logged_in') is True:
 		return render_template('home.html', logged_in = True, username = session['username'], page = page, lastpage = totalpages, pictures = data)
 	return render_template('home.html', page = page, lastpage = totalpages, pictures = data)
@@ -168,7 +166,49 @@ def uploading():
 		print fullpath
 		# Redirect the user to the uploaded_file route, which
 		# will basicaly show on the browser the uploaded file
-		return render_template('upload.html', success = True, filepath = fullpath)
+		return render_template('upload.html', logged_in = True, success = True, filepath = fullpath)
+		
+@app.route('/delete', methods=['GET', 'POST'])
+def delete():
+	username = session['username']
+	cursor = conn.cursor()
+	query = 'SELECT * FROM pictures WHERE username = %s'
+	cursor.execute(query, username)
+	data = cursor.fetchall()
+	if request.method == "POST":
+		pic_fpath = request.form.get('pic')
+		query = 'DELETE FROM pictures WHERE fpath = %s'
+		cursor.execute(query, (pic_fpath))
+		conn.commit()
+		query = 'SELECT * FROM pictures WHERE username = %s'
+		cursor.execute(query, username)
+		data = cursor.fetchall()
+		cursor.close()
+		return render_template('delete.html', logged_in = True, pictures = data, success = True)
+	return render_template('delete.html', logged_in = True, pictures = data)
+
+
+@app.route('/edit', methods=['GET', 'POST'])
+def edit():
+	username = session['username']
+	cursor = conn.cursor()
+	query = 'SELECT * FROM pictures WHERE username = %s'
+	cursor.execute(query, username)
+	data = cursor.fetchall()
+	if request.method == "POST":
+		pic_fpath = request.form.get('pic')
+		caption = request.form.get('caption')
+		query = 'UPDATE pictures SET caption = %s WHERE username = %s AND fpath = %s'
+		cursor.execute(query, (caption, username, pic_fpath))
+		conn.commit()
+		query = 'SELECT * FROM pictures WHERE username = %s'
+		cursor.execute(query, username)
+		data = cursor.fetchall()
+		cursor.close()
+		return render_template('edit.html', logged_in = True, pictures = data, success = True)
+	return render_template('edit.html', logged_in = True, pictures = data)
+
+
 
 app.secret_key = 'secret key 123 best key ever'
 if __name__ == "__main__":
