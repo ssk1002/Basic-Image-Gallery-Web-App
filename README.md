@@ -7,7 +7,7 @@ You need MAMP/WAMP in order to run the mySQL connection and import the empty dat
 You need to be running python 2.7 with the proper libraries for flask, hashlib, pymysql, datetime, werkzeug, os, datetime, and math.
 
 1. Start MAMP/WAMP (may need a different connection route for WAMP).
-2. Import either the full or empty SQL database.
+2. Import either the full or empty SQL database using phpMyAdmin on http://localhost:8888/phpMyAdmin/.
 3. Start terminal and run "python main.py".
 4. Access http://localhost:5000/ on any web browser.
 5. Use and appreciate the database!
